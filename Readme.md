@@ -41,6 +41,11 @@ hdfs ec -setPolicy -path /rs-3-2 -policy RS-3-2-1024k
 hdfs ec -getPolicy -path /rs-3-2
 hadoop fs -put ~/TestFile/file8064M /rs-3-2/
 
+hdfs ec -enablePolicy  -policy RS-10-4-1024k
+hdfs dfs -mkdir /rs-10-4
+hdfs ec -setPolicy -path /rs-10-4 -policy RS-10-4-1024k
+hdfs ec -getPolicy -path /rs-10-4
+
 ```
 [这里](http://bigdatastudy.net/show.aspx?id=458&cid=8) 有更多关于EC的Hadoop命令
 
@@ -88,22 +93,24 @@ sudo blkid
 
 # 添加开机自动挂载
 sudo vi /etc/fstab
-UUID=5c3dcf06-b781-4f5b-8542-3077be342814 /mnt/hadoop ext4 defaults 0 0
+UUID=5c3dcf06-b781-4f5b-8542-3077be342814 /home/hadoop/echadoop ext4 defaults 0 0
+UUID= /home/hadoop/echadoop ext4 defaults 0 0
+UUID= /home/hadoop/TFiles ext4 defaults 0 0
 
 # 查看可挂载的磁盘都有哪些
 sudo fdisk -l
 
 # 磁盘分区
-sudo fdisk /dev/sdb
+sudo fdisk /dev/sdi
 键入：m，可以看到帮助信息，
 键入：n，添加新分区
 键入：p，选择添加主分区
-键入：l，选择主分区编号为1，这样创建后的主分区为sdb1
+键入：l，选择主分区编号为1，这样创建后的主分区为sdi1
 之后，fdisk会让你选择该分区的开始值和结束值，直接回车
 最后键入：w，保存所有并退出，完成新硬盘的分区。
 
 # 格式化磁盘
-sudo mkfs -t ext4 /dev/sdb1
+sudo mkfs -t ext4 /dev/sdi1
 # 格式完磁盘之后就可以挂载，然后设置开机自动挂载
 
 # bash
@@ -111,6 +118,17 @@ sleep 5s #延迟5s
 sleep 5m #延迟5m
 sleep 5h #延迟5h
 sleep 5d #延迟5d
+
+# 压缩
+tar zcvf FileName.tar.gz DirName
+# 解压
+tar zxvf FileName.tar.gz
+
+# 使用iperf测量worker1和worker2的带宽
+# 在worker1运行
+iperf -s
+# 在worker2运行
+iperf -c worker1
 ```
 
 ### 高效的Vi的命令
