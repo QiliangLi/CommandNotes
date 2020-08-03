@@ -130,8 +130,22 @@ iperf -s
 # 在worker2运行
 iperf -c worker1
 
+# 脚本后台运行，不受关闭终端的影响
+nohup autoRun.sh &
+
+# 查看后台运行的脚本
 ps -aux|grep autoRun.sh| grep -v grep
 ps -aux|grep schemeAutoRun.sh| grep -v grep
+
+# TC限速
+sudo tc qdisc add dev ens9 root tbf rate 240Mbit latency 50ms burst 15kb
+# 解除TC限速
+sudo tc qdisc del dev ens9 root
+# 列出所有的TC限速策略
+sudo tc -s qdisc ls dev ens9 
+
+for i in {1..19};do ssh hadoop@n$i "sudo tc qdisc add dev ens9 root tbf rate 240Mbit latency 50ms burst 15kb";done
+for i in {1..19};do ssh hadoop@n$i "sudo tc qdisc del dev ens9 root";done
 ```
 
 ### 高效的Vi的命令
