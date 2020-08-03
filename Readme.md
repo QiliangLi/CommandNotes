@@ -129,6 +129,9 @@ tar zxvf FileName.tar.gz
 iperf -s
 # 在worker2运行
 iperf -c worker1
+
+ps -aux|grep autoRun.sh| grep -v grep
+ps -aux|grep schemeAutoRun.sh| grep -v grep
 ```
 
 ### 高效的Vi的命令
