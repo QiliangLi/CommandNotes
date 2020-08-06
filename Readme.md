@@ -144,8 +144,18 @@ sudo tc qdisc del dev ens9 root
 # 列出所有的TC限速策略
 sudo tc -s qdisc ls dev ens9 
 
-for i in {1..19};do ssh hadoop@n$i "hostname;sudo tc qdisc add dev ens9 root tbf rate 240Mbit latency 50ms burst 15kb";done
-for i in {1..19};do ssh hadoop@n$i "hostname;sudo tc qdisc del dev ens9 root";done
+# TC放大带宽 
+for j in {1..19};do ssh hadoop@n$j "hostname;sudo tc qdisc add dev ens9 root tbf rate 280Mbit latency 50ms burst 250kb";done
+# TC 30MB/s
+for j in {1..19};do ssh hadoop@n$j "hostname;sudo tc qdisc add dev ens9 root tbf rate 250Mbit latency 50ms burst 250kb";done
+for j in {1..19};do ssh hadoop@n$j "hostname;sudo tc qdisc del dev ens9 root";done
+
+for j in {1..19};do ssh hadoop@n$j "hostname;sudo ~/wondershaper/wondershaper -a ens9 -d 240000 -u 240000";done
+for j in {1..19};do ssh hadoop@n$j "hostname;sudo ~/wondershaper/wondershaper -c -a ens9";done
+
+cd /home/qingya/hadoop-3.1.2-src/hadoop-hdfs-project/hadoop-hdfs-client
+mvn package -Pdist -Dtar -DskipTests
+cp /home/qingya/hadoop-3.1.2-src/hadoop-hdfs-project/hadoop-hdfs-client/target/hadoop-hdfs-client-3.1.2.jar /home/qingya/compile
 ```
 
 ### 高效的Vi的命令
