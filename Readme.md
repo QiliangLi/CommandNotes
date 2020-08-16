@@ -156,6 +156,13 @@ for j in {1..19};do ssh hadoop@n$j "hostname;sudo ~/wondershaper/wondershaper -c
 cd /home/qingya/hadoop-3.1.2-src/hadoop-hdfs-project/hadoop-hdfs-client
 mvn package -Pdist -Dtar -DskipTests
 cp /home/qingya/hadoop-3.1.2-src/hadoop-hdfs-project/hadoop-hdfs-client/target/hadoop-hdfs-client-3.1.2.jar /home/qingya/compile
+
+cd /home/hadoop/hadoop-3.1.2-src/hadoop-hdfs-project/hadoop-hdfs
+mvn package -Pdist -Dtar -DskipTests
+scp -r /home/hadoop/hadoop-3.1.2-src/hadoop-hdfs-project/hadoop-hdfs/target/hadoop-hdfs-3.1.2/share/hadoop/hdfs hadoop@n$i:~/echadoop/hadoop-3.1.2/share/hadoop/
+
+# 查看每个节点的上下行已使用的带宽
+ifstat -t -i ens9 -T 1 1
 ```
 
 ### 高效的Vi的命令
