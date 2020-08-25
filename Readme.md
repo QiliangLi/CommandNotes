@@ -161,8 +161,13 @@ cd /home/hadoop/hadoop-3.1.2-src/hadoop-hdfs-project/hadoop-hdfs
 mvn package -Pdist -Dtar -DskipTests
 scp -r /home/hadoop/hadoop-3.1.2-src/hadoop-hdfs-project/hadoop-hdfs/target/hadoop-hdfs-3.1.2/share/hadoop/hdfs hadoop@n$i:~/echadoop/hadoop-3.1.2/share/hadoop/
 
+cp ~/SLECTIVEEC-src/*.java /home/hadoop/hadoop-3.1.2-src/hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/blockmanagement/
+sh ~/mvnHadoopSrc.sh
+
+for i in {5..6};do ssh hadoop@n$i "hdfs --daemon stop datanode";done
+
 # 查看每个节点的上下行已使用的带宽
-ifstat -t -i ens9 -T 1 1
+ifstat -t -i ens9 1 1
 ```
 
 ### 高效的Vi的命令
