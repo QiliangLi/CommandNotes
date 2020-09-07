@@ -29,6 +29,7 @@ hdfs fsck /rs-3-2/file8064M -files -blocks -locations
 hdfs --daemon stop datanode
 
 hadoop fs -rm /rs-6-3/*
+hdfs ec -setPolicy -path / -policy RS-6-3-1024k
 
 hdfs dfs -mkdir /rs-6-3
 hdfs ec -setPolicy -path /rs-6-3 -policy RS-6-3-1024k
@@ -137,6 +138,11 @@ nohup autoRun.sh &
 ps -aux|grep autoRun.sh| grep -v grep
 ps -aux|grep schemeAutoRun.sh| grep -v grep
 
+ps -aux|grep workloadAutoRun.sh| grep -v grep
+ps -aux|grep wSchemeAutoRun.sh| grep -v grep
+
+ps -aux|grep Simulate| grep -v grep
+
 # TC限速
 sudo tc qdisc add dev ens9 root tbf rate 240Mbit latency 50ms burst 15kb
 # 解除TC限速
@@ -165,9 +171,13 @@ cp ~/SLECTIVEEC-src/*.java /home/hadoop/hadoop-3.1.2-src/hadoop-hdfs-project/had
 sh ~/mvnHadoopSrc.sh
 
 for i in {5..6};do ssh hadoop@n$i "hdfs --daemon stop datanode";done
+for i in {5..7};do ssh hadoop@n$i "hdfs --daemon stop datanode";done
 
 # 查看每个节点的上下行已使用的带宽
 ifstat -t -i ens9 1 1
+
+# 让Simulate可用的JVM的内存大小从32m到450G
+java -Xms32m -Xmx460800m Simulate
 ```
 
 ### 高效的Vi的命令
