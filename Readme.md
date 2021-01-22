@@ -86,6 +86,8 @@ sudo mount /dev/sdj1 /home/hadoop/echadoop
 # 取消挂载,参数可以是设备，或者挂载点
 sudo umount /dev/sdh1
 sudo umount /home/hadoop/echadoop
+# target is busy
+sudo fuser -cuk /home/hadoop/echadoop
 
 # 添加开机自动挂载硬盘时要以UUID的方式，不要用绝对路径的方式，因为硬盘再每次启动后顺序可能会变
 # 查看UUID
@@ -110,6 +112,12 @@ sudo fdisk /dev/sdi
 之后，fdisk会让你选择该分区的开始值和结束值，直接回车
 最后键入：w，保存所有并退出，完成新硬盘的分区。
 
+# umount时出现device is busy
+sudo fuser -km /data
+
+# 删除磁盘所有分区
+sudo mkfs.ext4 /dev/sdb
+
 # 格式化磁盘
 sudo mkfs -t ext4 /dev/sdi1
 # 格式完磁盘之后就可以挂载，然后设置开机自动挂载
@@ -132,7 +140,7 @@ iperf -s
 iperf -c worker1
 
 # 脚本后台运行，不受关闭终端的影响
-nohup autoRun.sh &
+nohup sh autoRun.sh &
 
 # 查看后台运行的脚本
 ps -aux|grep autoRun.sh| grep -v grep
@@ -142,6 +150,9 @@ ps -aux|grep workloadAutoRun.sh| grep -v grep
 ps -aux|grep wSchemeAutoRun.sh| grep -v grep
 
 ps -aux|grep Simulate| grep -v grep
+
+ps -aux|grep heterogeneousAutoRun.sh| grep -v grep
+ps -aux|grep heterogeneousSchemeAutoRun.sh| grep -v grep
 
 # TC限速
 sudo tc qdisc add dev ens9 root tbf rate 240Mbit latency 50ms burst 15kb
@@ -175,9 +186,42 @@ for i in {5..7};do ssh hadoop@n$i "hdfs --daemon stop datanode";done
 
 # 查看每个节点的上下行已使用的带宽
 ifstat -t -i ens9 1 1
+ifstat -t -i ib0
+
+for i in {1..19};do ssh hadoop@n$i "hostname;sudo ~/wondershaper/wondershaper -c -a ens9 &";done
+
+scp -P 12345 -r ./0.9 hadoop@210.45.114.30:/home/hadoop/
+scp -P 12345 ./argsTest.sh hadoop@210.45.114.30:/home/hadoop/
+
+for i in {1..30};do ssh hadoop@node$i "hostname;sudo systemctl stop firewalld.service;sudo systemctl disable firewalld.service;sudo firewall-cmd --state";done
+
+for i in {2..30};do scp ./workers hadoop@node$i:/home/hadoop/echadoop/hadoop-3.1.2/etc/hadoop/;done
+
+for i in {1..30};do ssh hadoop@node$i "hostname;jps";done
 
 # 让Simulate可用的JVM的内存大小从32m到450G
 java -Xms32m -Xmx460800m Simulate
+```
+
+### CGroup
+```sh
+# 限速目录
+/sys/fs/cgroup/blkio
+blkio.throttle.read_bps_device
+blkio.throttle.read_iops_device
+blkio.throttle.write_bps_device
+blkio.throttle.write_iops_device
+"8:16 52428800" > blkio.throttle.read_bps_device
+
+# bash按行读文件
+while read line;do echo $line;done < /home/hadoop/raid2pp/parsingdisks/restrictions.txt
+
+# cgroup磁盘限速
+while read line;do echo $line >> blkio.throttle.read_bps_device;done < /home/hadoop/raid2pp/parsingdisks/restrictions.txt
+while read line;do echo $line >> blkio.throttle.write_bps_device;done < /home/hadoop/raid2pp/parsingdisks/restrictions.txt
+# 取消限速
+while read line;do echo $line >> blkio.throttle.read_bps_device;done < /home/hadoop/raid2pp/parsingdisks/restore.txt
+while read line;do echo $line >> blkio.throttle.write_bps_device;done < /home/hadoop/raid2pp/parsingdisks/restore.txt
 ```
 
 ### 高效的Vi的命令
