@@ -151,6 +151,8 @@ ps -aux|grep wSchemeAutoRun.sh| grep -v grep
 
 ps -aux|grep Simulate| grep -v grep
 
+ps -aux|grep recovery| grep -v grep
+
 ps -aux|grep heterogeneousAutoRun.sh| grep -v grep
 ps -aux|grep heterogeneousSchemeAutoRun.sh| grep -v grep
 
@@ -187,6 +189,7 @@ for i in {5..7};do ssh hadoop@n$i "hdfs --daemon stop datanode";done
 # 查看每个节点的上下行已使用的带宽
 ifstat -t -i ens9 1 1
 ifstat -t -i ib0
+ifstat -t -i ib0 1 1
 
 for i in {1..19};do ssh hadoop@n$i "hostname;sudo ~/wondershaper/wondershaper -c -a ens9 &";done
 
@@ -222,6 +225,9 @@ while read line;do echo $line >> blkio.throttle.write_bps_device;done < /home/ha
 # 取消限速
 while read line;do echo $line >> blkio.throttle.read_bps_device;done < /home/hadoop/raid2pp/parsingdisks/restore.txt
 while read line;do echo $line >> blkio.throttle.write_bps_device;done < /home/hadoop/raid2pp/parsingdisks/restore.txt
+
+# 查看ib
+for i in {1..19};do ssh hadoop@n$i "hostname;ifstat -t -i ib0 1 1";done
 ```
 
 ### 高效的Vi的命令
