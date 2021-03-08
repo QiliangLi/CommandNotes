@@ -204,6 +204,16 @@ for i in {1..30};do ssh hadoop@node$i "hostname;jps";done
 
 # 让Simulate可用的JVM的内存大小从32m到450G
 java -Xms32m -Xmx460800m Simulate
+
+# 统计当前目录下文件的个数（不包括目录）
+ls -l | grep "^-" | wc -l
+# 统计当前目录下文件的个数（包括子目录）
+ls -lR| grep "^-" | wc -l
+# 查看某目录下文件夹(目录)的个数（包括子目录）
+ls -lR | grep "^d" | wc -l
+
+# 查看centos的版本
+cat /etc/redhat-release
 ```
 
 ### CGroup
@@ -231,7 +241,16 @@ for i in {1..19};do ssh hadoop@n$i "hostname;ifstat -t -i ib0 1 1";done
 ```
 
 ### 高效的Vi的命令
+
 ```sh
 # 跳转指定行
 :rowNum
+```
+
+### Git
+
+```sh
+# fatal: remote origin already exists
+git remote rm origin
+git remote add origin git@github.com:FBing/java-code-generator
 ```
