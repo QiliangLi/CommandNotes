@@ -216,6 +216,18 @@ ls -lR | grep "^d" | wc -l
 cat /etc/redhat-release
 ```
 
+### 统计字符出现的次数
+```sh
+# vim
+:%s/objStr//gn
+
+# grep, 单个字符串
+grep -o objStr  filename|wc -l
+# grep, 多个字符串
+grep -o ‘objStr1\|objStr2'  filename|wc -l  #直接用\| 链接起来即可
+```
+
+
 ### CGroup
 ```sh
 # 限速目录
@@ -240,6 +252,16 @@ while read line;do echo $line >> blkio.throttle.write_bps_device;done < /home/ha
 for i in {1..19};do ssh hadoop@n$i "hostname;ifstat -t -i ib0 1 1";done
 ```
 
+### CentOS防火墙
+```sh
+# 查看防火墙状态
+firewall-cmd --state
+# 停止firewall
+systemctl stop firewalld.service
+# 禁止firewall开机启动
+systemctl disable firewalld.service 
+```
+
 ### 高效的Vi的命令
 
 ```sh
@@ -254,3 +276,43 @@ for i in {1..19};do ssh hadoop@n$i "hostname;ifstat -t -i ib0 1 1";done
 git remote rm origin
 git remote add origin git@github.com:FBing/java-code-generator
 ```
+
+## Crail
+
+```sh
+# 编译
+rm -rf /home/hadoop/incubator-crail/assembly/target/apache-crail-1.3-incubating-SNAPSHOT-bin
+mvn -DskipTests install
+
+# iobench
+crail iobench -t write -s $((1024*1024)) -k 1000
+crail iobench -t writeReplicas -s $((1024*1024)) -k 1000
+crail iobench -t writeReplicas -s $((1024*1024)) -k 1000 -m false
+crail iobench -t writeReplicas -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
+crail iobench -t readSequential -s $((1024*1024)) -k 1000
+
+# shell
+$CRAIL_HOME/bin/crail fs
+$CRAIL_HOME/bin/crail fs -ls <crail_path>
+$CRAIL_HOME/bin/crail fs -mkdir <crail_path>
+$CRAIL_HOME/bin/crail fs -copyFromLocal <local_path> <crail_path>
+$CRAIL_HOME/bin/crail fs -copyToLocal <crail_path> <local_path>
+$CRAIL_HOME/bin/crail fs -cat <crail_path>
+
+# 常用脚本
+for i in {2..5};do scp -r /home/hadoop/incubator-crail/assembly/target/apache-crail-1.3-incubating-SNAPSHOT-bin/apache-crail-1.3-incubating-SNAPSHOT hadoop@worker$i:~/;done
+
+for i in {2..5};do ssh hadoop@worker$i "hostname;rm /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/logs/*";done
+
+for i in {2..5};do ssh hadoop@node$i "hostname;ifstat -t -i ib0 1 1";done
+
+# node2
+for j in {3..5};do scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/core-site.xml hadoop@node$j:/home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/;done
+for j in {3..5};do scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/crail-site.conf hadoop@node$j:/home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/;done
+
+scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/core-site.xml hadoop@node1:/home/hadoop/incubator-crail/conf/
+scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/crail-site.conf hadoop@node1:/home/hadoop/incubator-crail/conf/
+```
+
+
+
