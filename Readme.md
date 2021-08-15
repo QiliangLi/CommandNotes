@@ -286,13 +286,20 @@ mvn -DskipTests install
 
 # iobench
 crail iobench -t write -s $((1024*1024)) -k 1000
-crail iobench -t writeReplicas -s $((1024*1024)) -k 1000
-crail iobench -t writeReplicas -s $((1024*1024)) -k 1000 -m false
+crail iobench -t write -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
 crail iobench -t writeReplicas -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
-crail iobench -t writeReplicas -s $((1024*1024)) -k 1000 -m true -f /tmp.dat
+
 crail iobench -t writeECCache -s $((1024*1024)) -r $((256*1024)) -k 1000 -f /tmp.dat
-crail iobench -t writeECPipeline -s $((1024*1024)) -r $((16*1024)) -k 1000 -f /tmp.dat
-crail iobench -t readSequential -s $((1024*1024)) -k 1000
+crail iobench -t readSequential -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
+
+# ECCache
+crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1000 -f /tmp.dat 
+# 4k pipeline
+crail iobench -t writeECPipeline -s $((1024*1024)) -r $((4*1024)) -k 1000 -f /tmp.dat 
+# 4k pureMonEC
+crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1000 -f /tmp.dat -a 64 -i true
+# 4k MonEC
+crail iobench -t writeMonEC -s $((1024*1024)) -k 1000 -f /tmp.dat -a 64 -n 4
 
 # shell
 $CRAIL_HOME/bin/crail fs
@@ -303,22 +310,23 @@ $CRAIL_HOME/bin/crail fs -copyToLocal <crail_path> <local_path>
 $CRAIL_HOME/bin/crail fs -cat <crail_path>
 
 # 常用脚本
-for i in {2..5};do scp -r /home/hadoop/incubator-crail/assembly/target/apache-crail-1.3-incubating-SNAPSHOT-bin/apache-crail-1.3-incubating-SNAPSHOT hadoop@worker$i:~/;done
+for i in {2..9};do scp -r /home/hadoop/incubator-crail/assembly/target/apache-crail-1.3-incubating-SNAPSHOT-bin/apache-crail-1.3-incubating-SNAPSHOT hadoop@worker$i:~/;done
+for i in {2..9};do ssh hadoop@worker$i "hostname;rm /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/logs/*;rm -rf /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/tmp/*";done
 
-for i in {2..5};do ssh hadoop@worker$i "hostname;rm /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/logs/*";done
-
-for i in {2..5};do ssh hadoop@node$i "hostname;ifstat -t -i ib0 1 1";done
+for i in {2..9};do ssh hadoop@node$i "hostname;ifstat -t -i ib0 1 1";done
 
 # node2
-for j in {3..5};do scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/core-site.xml hadoop@node$j:/home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/;done
-for j in {3..5};do scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/crail-site.conf hadoop@node$j:/home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/;done
-
-for i in {3..5};do scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/lib/* hadoop@node$i:/home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/lib/;done
-for i in {2..5};do ssh hadoop@node$i "hostname;sudo cp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/lib/libjnitest.so /usr/lib64/";done
-for i in {2..5};do ssh hadoop@node$i "hostname;sudo rm /lib64/libjnitest.so";done
+for j in {3..9};do scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/core-site.xml hadoop@node$j:/home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/;done
+for j in {3..9};do scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/crail-site.conf hadoop@node$j:/home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/;done
+for j in {3..9};do scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/slaves hadoop@node$j:/home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/;done
+for i in {3..9};do scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/lib/* hadoop@node$i:/home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/lib/;done
 
 scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/core-site.xml hadoop@node1:/home/hadoop/incubator-crail/conf/
 scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/crail-site.conf hadoop@node1:/home/hadoop/incubator-crail/conf/
+scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/slaves hadoop@node1:/home/hadoop/incubator-crail/conf/
+
+for i in {2..5};do ssh hadoop@node$i "hostname;sudo cp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/lib/libjnitest.so /usr/lib64/";done
+for i in {2..5};do ssh hadoop@node$i "hostname;sudo rm /lib64/libjnitest.so";done
 ```
 
 
