@@ -286,8 +286,10 @@ mvn -DskipTests install
 
 # iobench
 crail iobench -t write -s $((1024*1024)) -k 1000
-crail iobench -t write -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
+crail iobench -t write -s $((1024*1024)) -k 1 -m false -f /tmp.dat
 crail iobench -t writeReplicas -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
+crail iobench -t write -s $((1024*1024)) -k 1 -m false -f /tmp.dat
+crail iobench -t readReplicas -k 1000 -f /tmp.dat
 
 crail iobench -t writeECCache -s $((1024*1024)) -r $((256*1024)) -k 1000 -f /tmp.dat
 crail iobench -t readSequential -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
