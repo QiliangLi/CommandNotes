@@ -277,6 +277,12 @@ git remote rm origin
 git remote add origin git@github.com:FBing/java-code-generator
 ```
 
+### Kernel version and huge page configuration
+
+```sh
+
+```
+
 ## Crail
 
 ```sh
@@ -287,21 +293,22 @@ mvn -DskipTests install
 # iobench
 crail iobench -t write -s $((1024*1024)) -k 1000
 crail iobench -t write -s $((1024*1024)) -k 1 -m false -f /tmp.dat
-crail iobench -t writeReplicas -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
+crail iobench -t writeReplicas -s $((1024*1024)) -k 1 -m false -f /tmp.dat
 crail iobench -t write -s $((1024*1024)) -k 1 -m false -f /tmp.dat
 crail iobench -t readReplicas -k 1000 -f /tmp.dat
+crail iobench -t readNormalErasureCoding -k 1000 -f /tmp.dat
 
 crail iobench -t writeECCache -s $((1024*1024)) -r $((256*1024)) -k 1000 -f /tmp.dat
 crail iobench -t readSequential -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
 
 # ECCache
-crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1000 -f /tmp.dat 
+crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1 -f /tmp.dat 
 # 4k pipeline
-crail iobench -t writeECPipeline -s $((1024*1024)) -r $((4*1024)) -k 1000 -f /tmp.dat 
+crail iobench -t writeECPipeline -s $((1024*1024)) -r $((4*1024)) -k 1 -f /tmp.dat 
 # 4k pureMonEC
-crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1000 -f /tmp.dat -a 64 -i true
+crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1 -f /tmp.dat -a 64 -i true
 # 4k MonEC
-crail iobench -t writeMonEC -s $((1024*1024)) -k 1000 -f /tmp.dat -a 64 -n 4
+crail iobench -t writeMonEC -s $((1024*1024)) -k 1 -f /tmp.dat -a 64 -n $((64*1024))
 
 # shell
 $CRAIL_HOME/bin/crail fs
