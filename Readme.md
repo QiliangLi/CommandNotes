@@ -296,11 +296,11 @@ crail iobench -t write -s $((1024*1024)) -k 1 -m false -f /tmp.dat
 crail iobench -t writeReplicas -s $((1024*1024)) -k 1 -m false -f /tmp.dat
 crail iobench -t write -s $((1024*1024)) -k 1 -m false -f /tmp.dat
 crail iobench -t readReplicas -k 1000 -f /tmp.dat
-crail iobench -t readNormalErasureCoding -k 1000 -f /tmp.dat
 
 crail iobench -t writeECCache -s $((1024*1024)) -r $((256*1024)) -k 1000 -f /tmp.dat
 crail iobench -t readSequential -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
 
+crail iobench -t readNormalErasureCoding -k 1000 -f /tmp.dat
 # ECCache
 crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1 -f /tmp.dat 
 # 4k pipeline
