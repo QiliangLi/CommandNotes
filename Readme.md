@@ -275,6 +275,11 @@ systemctl disable firewalld.service
 # fatal: remote origin already exists
 git remote rm origin
 git remote add origin git@github.com:FBing/java-code-generator
+
+# 放弃修改，强制覆盖本地代码
+git fetch --all
+git reset --hard origin/master 
+git pull
 ```
 
 ### Kernel version and huge page configuration
