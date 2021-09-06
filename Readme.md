@@ -308,8 +308,11 @@ crail iobench -t readSequential -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
 crail iobench -t readNormalErasureCoding -k 1000 -f /tmp.dat
 crail iobench -t degradeReadErasureCoding -k 1 -f /tmp.dat
 crail iobench -t normalRecoveryErasureCoding -k 1 -f /tmp.dat
-crail iobench -t monECDegradeReadErasureCoding -k 1 -f /tmp.dat -a 64 -n $((64*1024))
 crail iobench -t pipelineDegradeReadErasureCoding -k 1 -f /tmp.dat -n $((64*1024))
+crail iobench -t recoveryPipelineErasureCoding -k 1 -f /tmp.dat -n $((64*1024))
+crail iobench -t monECDegradeReadErasureCoding -k 1 -f /tmp.dat -a 64 -n $((64*1024))
+crail iobench -t monECRecoveryErasureCoding -k 1 -f /tmp.dat -a 64 -n $((64*1024))
+
 # ECCache
 crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1 -f /tmp.dat
 # 4k pipeline
