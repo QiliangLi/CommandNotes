@@ -306,6 +306,7 @@ crail iobench -t writeECCache -s $((1024*1024)) -r $((256*1024)) -k 1000 -f /tmp
 crail iobench -t readSequential -s $((1024*1024)) -k 1000 -m false -f /tmp.dat
 
 crail iobench -t readNormalErasureCoding -k 1000 -f /tmp.dat
+
 crail iobench -t degradeReadErasureCoding -k 1 -f /tmp.dat
 crail iobench -t normalRecoveryErasureCoding -k 1 -f /tmp.dat
 crail iobench -t pipelineDegradeReadErasureCoding -k 1 -f /tmp.dat -n $((64*1024))
