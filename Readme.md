@@ -315,6 +315,8 @@ crail iobench -t pipelineDegradeReadErasureCoding -k 1 -f /tmp.dat -n $((64*1024
 crail iobench -t recoveryPipelineErasureCoding -k 1 -f /tmp.dat -n $((64*1024))
 crail iobench -t monECDegradeReadErasureCoding -k 1 -f /tmp.dat -a 64 -n $((64*1024))
 crail iobench -t monECRecoveryErasureCoding -k 1 -f /tmp.dat -a 64 -n $((64*1024))
+crail iobench -t pureMonECDegradeReadErasureCoding -k 1 -f /tmp.dat -a 64
+crail iobench -t pureMonECRecoveryErasureCoding -k 1 -f /tmp.dat -a 64
 
 # ECCache
 crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1 -f /tmp.dat
