@@ -318,6 +318,15 @@ crail iobench -t monECRecoveryErasureCoding -k 1 -f /tmp.dat -a 64 -n $((64*1024
 crail iobench -t pureMonECDegradeReadErasureCoding -k 1 -f /tmp.dat -a 64
 crail iobench -t pureMonECRecoveryErasureCoding -k 1 -f /tmp.dat -a 64
 
+ycsbTest(ycsbRequestType, size, encodingSplitSize, pureMonECSubStripeNum, transferSize, isPureMonEC);
+user5464797676921564295
+# ycsb test [replicasYCSB|eccacheYCSB|ecpipelineYCSB|pureMonECYCSB|monECYCSB]
+crail iobench -t ycsbTest -y replicasYCSB -s $((1024*1024))
+crail iobench -t ycsbTest -y eccacheYCSB -s $((1024*1024)) -r $((256*1024))
+crail iobench -t ycsbTest -y ecpipelineYCSB -s $((1024*1024)) -r $((64*1024))
+crail iobench -t ycsbTest -y pureMonECYCSB -s $((1024*1024)) -r $((256*1024)) -a 64 -i true
+crail iobench -t ycsbTest -y monECYCSB -s $((1024*1024)) -n $((32*1024)) -a 64
+
 # ECCache
 crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1 -f /tmp.dat
 # 4k pipeline
