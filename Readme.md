@@ -295,6 +295,14 @@ git pull
 rm -rf /home/hadoop/incubator-crail/assembly/target/apache-crail-1.3-incubating-SNAPSHOT-bin
 mvn -DskipTests install
 
+crail iobench -t write -s 2801664 -k 1 -m false -f /dc118836v2dbe7d36cb3540033blobsd759867d
+
+crail iobench -t write -s 2342912 -k 1 -m false -f /260f35e1v248deada7a65747a0blobse23bc03c
+
+crail iobench -t write -s 2670592 -k 1 -m false -f /dc118836v2f9ac28b0b2ec79aablobse90f9c2d
+
+crail iobench -t write -s 117964800 -k 1 -m false -f /786b3803v2987f5d81ad3ea282blobs99686f6f
+
 # iobench
 crail iobench -t write -s $((1024*1024)) -k 1000
 crail iobench -t write -s $((1024*1024)) -k 1 -m false -f /tmp.dat
