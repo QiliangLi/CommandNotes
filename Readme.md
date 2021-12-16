@@ -372,5 +372,6 @@ for i in {2..5};do ssh hadoop@node$i "hostname;sudo cp /home/hadoop/apache-crail
 for i in {2..5};do ssh hadoop@node$i "hostname;sudo rm /lib64/libjnitest.so";done
 ```
 
-
+## 统计代码行数
+git统计的不准确
 
