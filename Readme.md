@@ -375,3 +375,15 @@ for i in {2..5};do ssh hadoop@node$i "hostname;sudo rm /lib64/libjnitest.so";don
 ## 统计代码行数
 git统计的不准确
 
+## 创建Linux新账户
+
+```sh
+# pm集群
+# useradd -d  /home/ecgroup -m ecgroup -s /bin/bash
+# 配置账号密码
+# passwd ecgroup
+# 在/etc/sudoers配置一行，使得sudo su时不需要输入密码
+# 创建~/.ssh并拷贝已有公私钥，authorized_keys，known_hosts，并更改文件所属文件组
+# chown -R ecgroup:ecgroup ~/.ssh
+```
+
