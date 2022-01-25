@@ -384,6 +384,7 @@ git统计的不准确
 # passwd ecgroup
 # 在/etc/sudoers配置一行，使得sudo su时不需要输入密码
 # 创建~/.ssh并拷贝已有公私钥，authorized_keys，known_hosts，并更改文件所属文件组
+# chmod ~/.ssh
 # chown -R ecgroup:ecgroup ~/.ssh
 ```
 
