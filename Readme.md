@@ -342,7 +342,7 @@ crail iobench -t writeECPipeline -s $((1024*1024)) -r $((64*1024)) -k 1 -f /tmp.
 # 4k pureMonEC
 crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1 -f /tmp.dat -a 64 -i true
 # 4k MonEC
-crail iobench -t writeMonEC -s $((1024*1024)) -k 1 -f /tmp.dat -a 64 -n $((64*1024))
+crail iobench -t writeMicroEC -s $((1024*1024)) -k 1 -f /tmp.dat -a 64 -n $((64*1024))
 
 # shell
 $CRAIL_HOME/bin/crail fs
@@ -356,6 +356,7 @@ $CRAIL_HOME/bin/crail fs -cat <crail_path>
 for i in {2..9};do scp -r /home/hadoop/incubator-crail/assembly/target/apache-crail-1.3-incubating-SNAPSHOT-bin/apache-crail-1.3-incubating-SNAPSHOT hadoop@worker$i:~/;done
 for i in {2..9};do ssh hadoop@worker$i "hostname;rm /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/logs/*;rm -rf /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/tmp/*";done
 
+# test ib
 for i in {2..9};do ssh hadoop@node$i "hostname;ifstat -t -i ib0 1 1";done
 
 # node2
@@ -388,3 +389,14 @@ git统计的不准确
 # chown -R ecgroup:ecgroup ~/.ssh
 ```
 
+## Swap
+
+```sh
+# 不重启电脑，禁用启用swap，立刻生效
+# 禁用命令
+sudo swapoff -a
+# 启用命令
+sudo swapon -a
+# 查看是否关闭swap，显示0则表示关闭成功
+sudo free -m
+```
