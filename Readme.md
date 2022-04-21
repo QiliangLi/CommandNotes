@@ -267,6 +267,9 @@ systemctl disable firewalld.service
 ```sh
 # 跳转指定行
 :rowNum
+
+# 行首 & 行位
+shift+4 & shift+6
 ```
 
 ### Git
@@ -282,10 +285,19 @@ git reset --hard origin/master
 git pull
 ```
 
-### Kernel version and huge page configuration
+### Kernel version and transparent huge page configuration
 
 ```sh
+# 开启透明大页
+echo 'always' > /sys/kernel/mm/transparent_hugepage/enabled
+# 关闭透明大页
+echo 'never' > /sys/kernel/mm/transparent_hugepage/enabled
 
+# 查看大页使用情况
+# 系统级
+cat /proc/meminfo | grep AnonHugePages
+# 进程级
+cat /proc/[$PID]/smaps | grep AnonHugePages
 ```
 
 ## Crail
