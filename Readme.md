@@ -359,6 +359,7 @@ crail iobench -t multiWriteMicroEC -s $((1024*1024)) -k 1500 -a 64 -n $((16*1024
 crail iobench -t writeMicroEC_slicing -s $((1024*1024)) -k 1500 -a 64 -n $((16*1024)) -f /tmp1.dat
 crail iobench -t writeMicroEC_asyncFixed -s $((1024*1024)) -k 1500 -a 64 -n $((16*1024)) -f /tmp1.dat
 crail iobench -t writeMicroEC_asyncFinished -s $((1024*1024)) -k 1500 -a 64 -n $((16*1024)) -f /tmp1.dat
+crail iobench -t writeMicroEC_asyncNotFinished -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 
 for i in {1..17};do crail iobench -t writeMicroEC -s $((1024*1024)) -k 10000 -a 64 -n $((16*1024)) -f /tmp${i}.dat;done
 
