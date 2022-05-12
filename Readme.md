@@ -370,6 +370,8 @@ taskset -c 11 crail iobench -t writeMicroEC_asyncNotFinished -s $((1024*1024)) -
 
 crail iobench -t testBind
 
+crail iobench -t testAsyncCoding -k 10
+
 for i in {1..17};do crail iobench -t writeMicroEC -s $((1024*1024)) -k 10000 -a 64 -n $((16*1024)) -f /tmp${i}.dat;done
 
 # shell
