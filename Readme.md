@@ -379,6 +379,8 @@ crail iobench -t writeMicroEC_CodingFinished -s $((1024*1024)) -k 1500 -a 64 -n 
 
 crail iobench -t writeMicroEC_CodingDescent -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 
+crail iobench -t writeMicroEC_CodingDescentRegenerated -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
+
 for i in {1..17};do crail iobench -t writeMicroEC -s $((1024*1024)) -k 10000 -a 64 -n $((16*1024)) -f /tmp${i}.dat;done
 
 # shell
