@@ -370,9 +370,9 @@ taskset -c 11 crail iobench -t writeMicroEC_asyncNotFinished -s $((1024*1024)) -
 
 crail iobench -t testBind
 
-crail iobench -t testAsyncCoding -k 10
-crail iobench -t testAsyncCodingRandomized -k 10
-crail iobench -t testAsyncCodingRegenerated -k 10
+crail iobench -t testAsyncCodingPrealloc -k 1500
+crail iobench -t testAsyncCodingSame -k 1500
+crail iobench -t testAsyncCodingRealloc -k 1500
 
 crail iobench -t writeMicroEC_CodingFixed -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 crail iobench -t writeMicroEC_CodingFinished -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
