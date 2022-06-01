@@ -227,6 +227,14 @@ grep -o objStr  filename|wc -l
 grep -o ‘objStr1\|objStr2'  filename|wc -l  #直接用\| 链接起来即可
 ```
 
+### 在一个目录下的所有文件中查找字符串
+```sh
+find .  -iname '*.conf' | xargs grep "search string" -sl
+```
+[参数解释](https://blog.51cto.com/u_15239532/2835499)
+
+### 查找文件
+https://www.cnblogs.com/wuchanming/p/4013517.html
 
 ### CGroup
 ```sh
@@ -373,6 +381,7 @@ crail iobench -t testBind
 crail iobench -t testAsyncCodingPrealloc -k 1500
 crail iobench -t testAsyncCodingSame -k 1500
 crail iobench -t testAsyncCodingRealloc -k 1500
+crail iobench -t testNativeEncoding -k 1500
 
 crail iobench -t writeMicroEC_CodingFixed -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 crail iobench -t writeMicroEC_CodingFinished -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
