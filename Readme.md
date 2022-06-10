@@ -226,12 +226,16 @@ grep -o objStr  filename|wc -l
 # grep, 多个字符串
 grep -o ‘objStr1\|objStr2'  filename|wc -l  #直接用\| 链接起来即可
 ```
-
-### 在一个目录下的所有文件中查找字符串
+### Linux查找文件或内容
 ```sh
-find .  -iname '*.conf' | xargs grep "search string" -sl
+# 在一个目录下的所有文件中查找文件名
+# 例如：将当前目录及其子目录下所有文件后缀为 .c 的文件列出来
+find . -name "*.c"
+# 在一个目录下的所有文件（内容）中查找字符串
+find . -iname '*.conf' | xargs grep "search string" -sl
 ```
-[参数解释](https://blog.51cto.com/u_15239532/2835499)
+[参数解释-找内容](https://blog.51cto.com/u_15239532/2835499)
+[参数解释-找文件名](https://www.runoob.com/linux/linux-comm-find.html)
 
 ### 查找文件
 https://www.cnblogs.com/wuchanming/p/4013517.html
