@@ -240,6 +240,17 @@ find . -iname '*.conf' | xargs grep "search string" -sl
 ### 查找文件
 https://www.cnblogs.com/wuchanming/p/4013517.html
 
+### Linux端口related
+```sh
+# 范围：0~65535，0~1023被OS使用
+# 显示所有端口和所有对应的程序
+netstat -atulnp | grep [port no]
+# 查看某一端口的占用情况
+sudo lsof -i:[port no]
+# 清除端口占用
+sudo kill -9 $(lsof -i:端口号 -t)
+```
+
 ### CGroup
 ```sh
 # 限速目录
