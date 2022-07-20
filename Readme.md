@@ -391,14 +391,13 @@ taskset -c 11 crail iobench -t writeMicroEC_asyncFixed -s $((1024*1024)) -k 1500
 taskset -c 11 crail iobench -t writeMicroEC_asyncFinished -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 taskset -c 11 crail iobench -t writeMicroEC_asyncNotFinished -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 
-crail iobench -t testBind
-
 crail iobench -t testAsyncCodingPrealloc -k 1500
 crail iobench -t testAsyncCodingRealloc -k 1500
 crail iobench -t testAsyncCodingSame -s $((1024*1024)) -k 1500 -a 64
 crail iobench -t testNativeEncoding -s $((1024*1024)) -k 1500
 crail iobench -t testAsyncCodingSame -s $((16*1024)) -k 1500 -a 1
 crail iobench -t testNativeEncoding -s $((16*1024)) -k 1500
+crail iobench -t testMemcached
 
 crail iobench -t writeMicroEC_CodingFixed -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 crail iobench -t writeMicroEC_CodingFinished -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
@@ -464,4 +463,20 @@ sudo swapoff -a
 sudo swapon -a
 # 查看是否关闭swap，显示0则表示关闭成功
 sudo free -m
+```
+
+## 时间戳（C/C++）
+```C
+// 头文件
+#include <time.h>
+// 初始化两个变量
+struct timespec time1 = {0, 0};
+struct timespec time2 = {0, 0};
+// 获得第一个时间戳
+clock_gettime(CLOCK_REALTIME, &time1);
+// 需要测试内容
+// 获得第二个时间戳
+clock_gettime(CLOCK_REALTIME, &time2);
+// 计算时间，单位为ns
+long encode_time=(time2.tv_sec-time1.tv_sec)*1000000000+(time2.tv_nsec-time1.tv_nsec);
 ```
