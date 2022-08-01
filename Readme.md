@@ -393,8 +393,8 @@ taskset -c 11 crail iobench -t writeMicroEC_asyncNotFinished -s $((1024*1024)) -
 
 crail iobench -t testNativeEncoding -s $((1024*1024)) -k 1500
 crail iobench -t testAsyncCodingSame -s $((16*1024)) -k 1500 -a 1
-crail iobench -t testAsyncCodingSame -s $((6*256*1024)) -k 1500 -a 64
-crail iobench -t testNativePureEncoding -s $((6*64*1024)) -k 1500 
+crail iobench -t testAsyncCodingSame -s $((3*256*1024)) -k 1500 -a 64
+crail iobench -t testNativePureEncoding -s $((3*64*1024)) -k 1500 
 crail iobench -t testNativePureEncoding -s $((6*256*1024)) -k 1500 
 crail iobench -t testNativePureEncoding -s $((6*256*1024)) -k 1500 -a 64 -i true
 crail iobench -t testNetworkLatency -s $((6*256*1024)) -k 1500 -f /n1.dat
@@ -402,7 +402,7 @@ crail iobench -t testNetworkLatency -s $((6*256*1024)) -k 1500 -f /n1.dat
 
 crail iobench -t writeMicroEC_CodingFixed -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 crail iobench -t writeMicroEC_CodingFinished -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
-crail iobench -t writeMicroEC_CodingDescent -s $((3*256*1024)) -k 1500 -a 64 -f /tmp3.dat
+crail iobench -t writeMicroEC_CodingDescent -s $((3*256*1024)) -k 1500 -a 64 -f /loop.dat
 crail iobench -t writeMicroEC_CodingDescentRegenerated -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 for i in {1..17};do crail iobench -t writeMicroEC -s $((1024*1024)) -k 10000 -a 64 -n $((16*1024)) -f /tmp${i}.dat;done
 
@@ -479,4 +479,19 @@ clock_gettime(CLOCK_REALTIME, &time1);
 clock_gettime(CLOCK_REALTIME, &time2);
 // 计算时间，单位为ns
 long encode_time=(time2.tv_sec-time1.tv_sec)*1000000000+(time2.tv_nsec-time1.tv_nsec);
+```
+
+## isocpus
+```sh
+# node14改的sudo vim /etc/grub2-efi.cfg
+# 修改文件
+sudo vim /etc/grub2-efi.cfg
+or
+sudo vim /etc/default/grub
+
+# 同步一下
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+# 重启后查看是否隔离成功
+cat /proc/cmdline
 ```
