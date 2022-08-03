@@ -374,9 +374,9 @@ crail iobench -t ycsbTest -y pureMonECYCSB -s $((1024*1024)) -r $((256*1024)) -a
 crail iobench -t ycsbTest -y monECYCSB -s $((1024*1024)) -n $((32*1024)) -a 64
 
 # ECCache
-crail iobench -t writeECPipeline -s $((6*256*1024)) -r $((256*1024)) -k 1500 -f /tmp1.dat
+crail iobench -t writeECPipeline -s $((3*256*1024)) -r $((256*1024)) -k 1500 -f /tmp1.dat
 # 64k pipeline
-crail iobench -t writeECPipeline -s $((6*256*1024)) -r $((64*1024)) -k 1500 -f /tmp2.dat 
+crail iobench -t writeECPipeline -s $((3*256*1024)) -r $((64*1024)) -k 1500 -f /tmp2.dat 
 # 4k pureMonEC
 crail iobench -t writeECPipeline -s $((1024*1024)) -r $((256*1024)) -k 1 -f /tmp.dat -a 64 -i true
 # 4k MonEC
@@ -398,6 +398,7 @@ crail iobench -t testNativePureEncoding -s $((3*64*1024)) -k 1500
 crail iobench -t testNativePureEncoding -s $((6*256*1024)) -k 1500 
 crail iobench -t testNativePureEncoding -s $((6*256*1024)) -k 1500 -a 64 -i true
 crail iobench -t testNetworkLatency -s $((6*256*1024)) -k 1500 -f /n1.dat
+crail iobench -t warmupCreateRedundantFile -k 1500 -f /w1.dat
 
 
 crail iobench -t writeMicroEC_CodingFixed -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
@@ -406,7 +407,21 @@ crail iobench -t writeMicroEC_CodingDescent -s $((3*256*1024)) -k 1500 -a 64 -f 
 crail iobench -t writeMicroEC_CodingDescentRegenerated -s $((1024*1024)) -k 1500 -a 64 -n $((4*1024)) -f /tmp1.dat
 for i in {1..17};do crail iobench -t writeMicroEC -s $((1024*1024)) -k 10000 -a 64 -n $((16*1024)) -f /tmp${i}.dat;done
 
-crail iobench -t warmupCreateRedundantFile -k 1500 -f /w1.dat
+
+# breakdown test
+crail iobench -t testAsyncCodingSame -s $((3*256*1024)) -k 1500 -a 64
+crail iobench -t testNativePureEncoding -s $((3*64*1024)) -k 1500
+crail iobench -t testNativePureEncoding -s $((6*256*1024)) -k 1500 -a 64 -i true
+crail iobench -t testNetworkLatency -s $((6*256*1024)) -k 1500 -f /n1.dat
+
+
+# MicroEC
+crail iobench -t writeMicroEC_CodingDescent -s $((3*256*1024)) -k 1500 -a 64 -f /loop.dat
+# ECCache
+crail iobench -t writeECPipeline -s $((3*256*1024)) -r $((256*1024)) -k 1500 -f /tmp1.dat
+# 64k pipeline
+crail iobench -t writeECPipeline -s $((3*256*1024)) -r $((64*1024)) -k 1500 -f /tmp2.dat 
+
 
 # shell
 $CRAIL_HOME/bin/crail fs
