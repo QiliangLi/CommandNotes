@@ -344,7 +344,7 @@ crail iobench -t write -s 117964800 -k 1 -m false -f /786b3803v2987f5d81ad3ea282
 # iobench
 crail iobench -t write -s $((1024*1024)) -k 1000
 crail iobench -t write -s $((1024*1024)) -k 1 -m false -f /tmp.dat
-crail iobench -t writeReplicas -s $((1024*1024)) -k 1 -m false -f /tmp.dat
+crail iobench -t writeReplicas -s $((4*1024)) -k 1000 -f /tmp.dat
 crail iobench -t write -s $((1024*1024)) -k 1 -m false -f /tmp.dat
 crail iobench -t readReplicas -k 1000 -f /tmp.dat
 
