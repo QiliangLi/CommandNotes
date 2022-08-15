@@ -422,7 +422,7 @@ crail iobench -t writeECPipeline -s $((3*256*1024)) -r $((256*1024)) -k 1500 -f 
 # 64k pipeline
 crail iobench -t writeECPipeline -s $((3*256*1024)) -r $((64*1024)) -k 1500 -f /tmp2.dat
 
-crail iobench -t writeHydra -s $((4*256*1024)) -k 1500 -a 64 -f /loop.dat
+crail iobench -t writeHydra -s $((4*256*1024)) -k 1500 -f /loop.dat
 
 
 # shell
