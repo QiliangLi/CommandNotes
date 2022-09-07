@@ -508,6 +508,7 @@ sudo vim /etc/default/grub
 
 # 同步一下
 sudo grub-mkconfig -o /boot/grub/grub.cfg
+sudo grub2-mkconfig -o /boot/grub/grub.cfg
 
 # 重启后查看是否隔离成功
 cat /proc/cmdline
