@@ -214,6 +214,10 @@ ls -lR | grep "^d" | wc -l
 
 # 查看centos的版本
 cat /etc/redhat-release
+# 查看OS版本
+cat /etc/os-release
+# 查看内核版本
+cat /proc/version
 ```
 
 ### 统计字符出现的次数
@@ -470,13 +474,21 @@ git统计的不准确
 
 ```sh
 # pm集群
+# 1. 创建账号
 # useradd -d  /home/ecgroup -m ecgroup -s /bin/bash
-# 配置账号密码
+# 2. 配置账号密码（可选，配置成给定的密码方便后续管理）
 # passwd ecgroup
-# 在/etc/sudoers配置一行，使得sudo su时不需要输入密码
-# 创建~/.ssh并拷贝已有公私钥，authorized_keys，known_hosts，并更改文件所属文件组
+# 3. 在/etc/sudoers配置一行，使得sudo su时不需要输入密码
+# 4. 创建~/.ssh并拷贝已有公私钥，authorized_keys，known_hosts，并更改文件所属文件组
 # chmod ~/.ssh
 # chown -R ecgroup:ecgroup ~/.ssh
+```
+
+## Linux环境变量加载顺序
+```sh
+# 用户环境变量覆盖全局环境变量：修改~/.bashrc
+# 注：新加路径要在$PATH之前
+export PATH=/home/hadoop/bin:$PATH / export PATH=/home/ecgroup/bin:$PATH
 ```
 
 ## Swap
