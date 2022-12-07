@@ -186,10 +186,12 @@ sh ~/mvnHadoopSrc.sh
 for i in {5..6};do ssh hadoop@n$i "hdfs --daemon stop datanode";done
 for i in {5..7};do ssh hadoop@n$i "hdfs --daemon stop datanode";done
 
-# 查看每个节点的上下行已使用的带宽
+# 查看每个节点的上下行已使用的带宽（网卡使用状态）
 ifstat -t -i ens9 1 1
 ifstat -t -i ib0
 ifstat -t -i ib0 1 1
+ifstat -t -i ens4f1 1 1
+
 
 for i in {1..19};do ssh hadoop@n$i "hostname;sudo ~/wondershaper/wondershaper -c -a ens9 &";done
 
@@ -465,6 +467,18 @@ scp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/conf/slaves hadoop@node1:/
 
 for i in {2..5};do ssh hadoop@node$i "hostname;sudo cp /home/hadoop/apache-crail-1.3-incubating-SNAPSHOT/lib/libjnitest.so /usr/lib64/";done
 for i in {2..5};do ssh hadoop@node$i "hostname;sudo rm /lib64/libjnitest.so";done
+
+
+# 编译C代码到.so的流程（目前已经写成了编译脚本在node1的/home/hadoop/incubator-crail/scripts/compileSo.sh）
+# 修改好Crailcoding.java以及microec.c源码
+# step1：先编译jni的C接口
+cd /home/hadoop/MicroEC/client/src/main/java
+javah org.apache.crail.tools.Crailcoding
+sudo cp org_apache_crail_tools_Crailcoding.h /home/hadoop/MicroEC/client/src/main/java/org/apache/crail/tools
+# step2：编译C代码
+cd /home/hadoop/MicroEC/client/src/main/java/org/apache/crail/tools
+g++ -std=c++11 -I/usr/java/jdk1.8.0_221-amd64/include -I/usr/java/jdk1.8.0_221-amd64/include/linux -fPIC -shared microec.c -o libmicroec.so -L.  /usr/lib/libisal.so
+# 注意：org_apache_crail_tools_Crailcoding.h文件中的c接口有时候自动编译出来函数名带有_1等，比如“Java_org_apache_crail_tools_Crailcoding_MicroecDecoding_1update_1networkinfo”，注意.c文件中需要对应改过来
 ```
 
 ## 统计代码行数
@@ -534,3 +548,33 @@ sudo grub2-mkconfig -o /boot/grub/grub.cfg
 # 重启后查看是否隔离成功
 cat /proc/cmdline
 ```
+
+## RDMA速度测试
+```sh
+# 使用[perftest](https://github.com/linux-rdma/perftest)进行测试
+# 时延：ib_send_lat, ib_write_lat, ib_read_lat, ib_atomic_lat
+# 带宽：ib_send_bw, ib_write_bw, ib_read_bw, ib_atomic_bw
+# 查看网卡状态
+ibstatus
+# 查看设备号
+ibdev2netdev or ibstat -l
+# server端测试命令（以ib_read_lat为例），-a：Run sizes from 2 till 2^23；-F：Do not fail even if cpufreq_ondemand module
+ib_read_lat -d mlx5_1 -a -F
+ib_write_lat -d mlx5_1 -a -F
+# client端测试命令
+ib_read_lat -d mlx5_1 -a -F 10.0.0.62<server ip>
+ib_write_lat -d mlx5_1 -a -F 10.0.0.62
+
+# FAQ：
+# 1. (client端) Completion with error at client. Failed status 10: wr_id 0 syndrom 0x88. scnt=1, ccnt=1.
+# 解决方法：server端的指令没有加参数-a -F
+# 2. (server端) Port number 1 state is Down. Couldn't set the link layer. Couldn't get context for the device.
+# 解决方法：未使用-d指定设备，需要先查看设备号（mlx开头），再使用-d指定设备
+```
+
+## YCSB生成trace
+```sh
+# node6上，可以调整读写比例和request条数
+/home/hadoop/YCSB-tracegen/ycsb.sh
+```
+
