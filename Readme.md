@@ -215,11 +215,27 @@ ls -lR| grep "^-" | wc -l
 ls -lR | grep "^d" | wc -l
 
 # 查看centos的版本
-cat /etc/redhat-release
+cat /etc/redhat-release / lsb_release -a / cat  /etc/issue
 # 查看OS版本
 cat /etc/os-release
 # 查看内核版本
-cat /proc/version
+cat /proc/version / uname -a
+
+# 总核数 = 物理CPU个数 X 每颗物理CPU的核数 
+# 总逻辑CPU数 = 物理CPU个数 X 每颗物理CPU的核数 X 超线程数
+# 查看物理CPU个数
+cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+# 查看每个物理CPU中core的个数(即核数)
+cat /proc/cpuinfo| grep "cpu cores"| uniq
+# 查看逻辑CPU的个数（总数）
+cat /proc/cpuinfo| grep "processor"| wc -l
+# 查看CPU信息（型号）
+cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+# 查看机器型号（机器硬件型号）
+sudo dmidecode | grep "Product Name"
+sudo dmidecode
+# 查看linux 系统内存大小的信息，可以查看总内存，剩余内存，可使用内存等信息  
+cat /proc/meminfo
 ```
 
 ### 统计字符出现的次数
