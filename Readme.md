@@ -72,6 +72,57 @@ dd if=/dev/zero of=my_new_file count=102400 bs=1024
 
 ## Linux相关
 
+### 编译安装Linux内核
+```sh
+# step1: 在 https://cdn.kernel.org/pub/linux/kernel 下载要编译安装的内核的源码，例如要编译3.13.0版本的内核，则下载linux-3.13.tar.gz 或 linux-3.13.tar.xz
+wget https://cdn.kernel.org/pub/linux/kernel/v3.0/linux-3.13.tar.gz
+tar zxvf linux-3.13.tar.gz
+
+# step2: 生成.config文件
+cd linux-3.13/
+# 方式一：适合无控制台使用
+cp /boot/config-$(uname -r) .config
+# 需要sudo权限，执行指令后一直回车（选择默认值）
+make oldconfig
+# 方式二：适合有控制台使用
+# 需要sudo权限，进入后先save，再exit
+make menuconfig
+
+# step3：编译 & 安装（需要sudo权限，并严格按照下面的顺序进行make）
+make -j `nproc`
+make modules_install
+make install
+
+# step4：更新grub
+# 需要sudo权限
+grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
+
+# step5: 设置开机启动的内核版本
+# 查看可用的内核版本（需要sudo权限）
+grep menuentry /boot/efi/EFI/centos/grub.cfg
+# 选择想要启动的内核版本，并设置序号（从0开始编号，指令需要sudo权限）
+# 例如想启动的内核的标号是1
+grub2-set-default 1
+
+# step6：重启
+sudo reboot
+
+# 相关指令
+# 验证
+uname -r
+# 查看安装的内核（非编译安装）
+rpm -qagrep -i kernel
+rpm -ga kernel
+```
+
+参考资料：
+路路的博客（适用于Ubuntu）：https://blog.csdn.net/ibless/article/details/82349507
+CentOS换内核：
+https://zskjohn.blog.csdn.net/article/details/108931626?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-108931626-blog-92394180.pc_relevant_recovery_v2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-108931626-blog-92394180.pc_relevant_recovery_v2&utm_relevant_index=2
+
+https://blog.csdn.net/xj178926426/article/details/78727991?spm=1001.2101.3001.6650.14&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-14-78727991-blog-81479603.pc_relevant_3mothn_strategy_and_data_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-14-78727991-blog-81479603.pc_relevant_3mothn_strategy_and_data_recovery&utm_relevant_index=15
+
+
 ### 挂载磁盘相关命令
 ```sh
 # 查看所有磁盘的顺序及类型
