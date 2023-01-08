@@ -266,7 +266,7 @@ ls -lR| grep "^-" | wc -l
 ls -lR | grep "^d" | wc -l
 
 # 查看centos的版本
-cat /etc/redhat-release / lsb_release -a / cat  /etc/issue
+cat /etc/redhat-release / lsb_release -a / cat /etc/issue
 # 查看OS版本
 cat /etc/os-release
 # 查看内核版本
@@ -355,6 +355,25 @@ while read line;do echo $line >> blkio.throttle.write_bps_device;done < /home/ha
 
 # 查看ib
 for i in {1..19};do ssh hadoop@n$i "hostname;ifstat -t -i ib0 1 1";done
+```
+
+### 后台执行命令screen
+```sh
+# 开启一个session
+session
+
+# 挂起一个session
+ctrl+a d
+
+# 列出所有session
+screen -ls
+
+# kill一个已经开启的session
+# 1. 使用screen的名字，kill掉
+screen -S session_name -X quit
+# 2. 激活screen，并利用exit退出并kill掉session
+screen -r session_name
+exit
 ```
 
 ### CentOS防火墙
