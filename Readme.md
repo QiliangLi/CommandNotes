@@ -285,6 +285,8 @@ cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
 # 查看机器型号（机器硬件型号）
 sudo dmidecode | grep "Product Name"
 sudo dmidecode
+# 查看服务器的型号
+sudo dmidecode | grep -A4 "System Information"
 # 查看linux 系统内存大小的信息，可以查看总内存，剩余内存，可使用内存等信息  
 cat /proc/meminfo
 ```
@@ -357,10 +359,17 @@ while read line;do echo $line >> blkio.throttle.write_bps_device;done < /home/ha
 for i in {1..19};do ssh hadoop@n$i "hostname;ifstat -t -i ib0 1 1";done
 ```
 
+### 在linux系统中查看cacheline的大小
+```sh
+# 在/sys/devices/system/cpu/cpu1/cache路径下，有index文件夹（index0, index1, index2, index3），四者分别L1数据cache，L1指令cache，L2cache，L3cache
+# 每个文件夹下有多个cache相关信息，例如cacheline_size就是cacheline的大小，x86结构的 cacheline 一般为64字节
+cat /sys/devices/system/cpu/cpu1/cache/index0/coherency_line_size 
+```
+
 ### 后台执行命令screen
 ```sh
 # 开启一个session
-session
+screen
 
 # 挂起一个session
 ctrl+a d
