@@ -93,6 +93,8 @@ make -j `nproc`
 make modules_install
 make install
 
+make -j `nproc` && make modules_install && make install
+
 # step4：更新grub
 # 需要sudo权限
 grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
