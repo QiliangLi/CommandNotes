@@ -139,7 +139,7 @@ sudo mount /dev/sdj1 /home/hadoop/echadoop
 # 取消挂载,参数可以是设备，或者挂载点
 sudo umount /dev/sdh1
 sudo umount /home/hadoop/echadoop
-# target is busy
+# FAQ: target is busy
 sudo fuser -cuk /home/hadoop/echadoop
 
 # 添加开机自动挂载硬盘时要以UUID的方式，不要用绝对路径的方式，因为硬盘再每次启动后顺序可能会变
@@ -313,6 +313,12 @@ find . -iname '*.h' | xargs grep "search string" -sl
 ```
 [参数解释-找内容](https://blog.51cto.com/u_15239532/2835499)
 [参数解释-找文件名](https://www.runoob.com/linux/linux-comm-find.html)
+
+### Linux比较两个文件内容
+```sh
+diff filea fileb
+```
+[更多比较参数](https://blog.csdn.net/mosesmo1989/article/details/51093631)
 
 ### Linux根据进程名获取pid
 ```sh
@@ -668,6 +674,110 @@ ib_write_lat -d mlx5_1 -a -F 10.0.0.62
 # 2. (server端) Port number 1 state is Down. Couldn't set the link layer. Couldn't get context for the device.
 # 解决方法：未使用-d指定设备，需要先查看设备号（mlx开头），再使用-d指定设备
 ```
+
+## Mellanox OFED命令
+```sh
+#查看 Mellanox 网卡
+lspci -v | grep Mellanox
+
+# 查看Mellanox网卡驱动版本和固件版本（以node集群为例）
+# ib0为网卡名，可以通过ifconfig查询
+ethtool -i ib0 | grep -i firmware | cut -d ' ' -f 2-
+ethtool -i ib0 | grep -i version
+ethtool -i ib0
+
+# mlx4_core可通过ibstatus查到（把编号换成core）
+modinfo mlx4_core | grep ^version:|sed 's/version: * //g'
+modinfo mlx4_core | grep ^version:
+modinfo mlx4_core
+```
+
+## Mellanox OFED驱动安装
+```sh
+# 脚本 copyright@Daniel
+#!/bin/bash
+
+SUDO=
+ID=12
+IB_CONF=/etc/sysconfig/network-scripts/ifcfg-ib0
+
+
+### Script starts here
+
+## Check sudo priviledge
+if test $(id -u) -eq 0; then
+        SUDO=
+else
+        SUDO=sudo
+fi
+
+## Install dependencies
+${SUDO} yum install -y gtk2 atk cairo gcc-gfortran tcsh libnl lsof tcl tk vim wget
+
+## Work in temporary directory
+cd ~
+mkdir -p sxy/ib/mnt
+cd sxy/ib
+cp /home/hadoop/MLNX_OFED_LINUX-3.4-2.2.2.3-rhel7.3-x86_64-ext.iso ./
+${SUDO} mount -o ro,loop MLNX_OFED_LINUX-3.4-2.2.2.3-rhel7.3-x86_64-ext.iso mnt
+cd mnt
+${SUDO} ./mlnxofedinstall
+
+## Wait for confirmation to continue
+echo
+echo "Press [Enter] to continue or [Ctrl-C] to abort" && read
+
+## Start service(1)
+${SUDO} service openibd start
+
+## Wait for confirmation to continue
+echo
+echo "Press [Enter] to continue or [Ctrl-C] to abort" && read
+
+${SUDO} modprobe -rv ib_isert rpcrdma ib_srpt
+${SUDO} service openibd start
+
+## Start service(2)
+${SUDO} chkconfig openibd on
+${SUDO} service opensmd start
+${SUDO} serviceig opensmd on
+
+## Unmount
+${SUDO} umount mnt
+
+## Make out configuration for Infiniband adapter
+${SUDO} touch ${IB_CONF}
+
+echo
+echo "Writing information to Infiniband configuration file(${IB_CONF}):"
+echo -e "DEVICE=ib0\n"\
+"BOOTPROTO=static\n"\
+"IPADDR=10.0.0.${ID}\n"\
+"NETMASK=255.255.255.0\n"\
+"BROADCAST=10.0.0.255\n"\
+"NETWORK=10.0.0.0\n"\
+"ONBOOT=yes" | ${SUDO} tee ${IB_CONF}
+echo
+
+## Really startup
+${SUDO} nmcli connection add con-name iblink ifname ib0 type infiniband ip4 10.0.0.${ID}/24 gw4 10.0.0.0
+${SUDO} nmcli connection up iblink
+# Check
+echo "IP Address:"
+ip addr
+
+# FAQ：Mellanox官网驱动并不会只会指定OS版本，并不会指定内核版本，因此可能会出现内核版本不匹配的问题：The 4.4.0 kernel is installed, MLNX OFED LINUX does not have drivers available for this kernel.
+# 解决方法：编译一个符合当前OS和内核版本的驱动镜像
+cd sxy/ib/mnt
+sudo ./mlnx_add_kernel_support.sh --mlnx_ofed ./ --make-iso
+sudo umount sxy/ib/mnt
+# 将编译生成在/tmp下的镜像名替换至以上脚本，并重新安装
+
+# 验证是否成功：查看驱动版本号
+modinfo mlx4_core | grep ^version:
+```
+
+
 
 ## YCSB生成trace
 ```sh
