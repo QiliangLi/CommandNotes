@@ -124,6 +124,30 @@ https://zskjohn.blog.csdn.net/article/details/108931626?spm=1001.2101.3001.6650.
 
 https://blog.csdn.net/xj178926426/article/details/78727991?spm=1001.2101.3001.6650.14&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-14-78727991-blog-81479603.pc_relevant_3mothn_strategy_and_data_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-14-78727991-blog-81479603.pc_relevant_3mothn_strategy_and_data_recovery&utm_relevant_index=15
 
+### 查看、加载、卸载Linux kernel的模块
+```sh
+# 查看当前运行的内核版本的所有模块
+find /lib/modules/$(uname -r) -type f -name '*.ko*' | more
+find /lib/modules/$(uname -r) -type f -name 'hydra.ko' | more
+# 查看已加载的内核模块，一般配合grep使用
+lsmod
+lsmod | grep hydra
+# 加载内核模块
+sudo modprobe hydra
+# 确认加载成功
+sudo modprobe hydra --first-time
+# 卸载内核模块
+sudo modprobe -r hydra
+# 确认卸载成功
+sudo modprobe -r hydra --first-time
+```
+[更多](https://phoenixnap.com/kb/modprobe-command) 参数。
+
+### 查看登录该服务器的所有用户
+```sh
+# 所有信息
+w
+```
 
 ### 挂载磁盘相关命令
 ```sh
@@ -777,7 +801,17 @@ sudo umount sxy/ib/mnt
 modinfo mlx4_core | grep ^version:
 ```
 
+## Configure and Makefile
+```sh
+# 输出基于Makefile的完整gcc编译指令
+make -n
+```
 
+## Notes on running Hydra
+```sh
+setup/portal.list: 类似于slaves
+port number范围：1到65535 1到1023是系统其它的可以随便用
+```
 
 ## YCSB生成trace
 ```sh
