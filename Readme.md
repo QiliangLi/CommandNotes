@@ -340,7 +340,11 @@ find . -iname '*.h' | xargs grep "search string" -sl
 
 ### Linux比较两个文件内容
 ```sh
+# 比较文件
 diff filea fileb
+# 比较文件夹
+# r：递归比较所有文件；q：只输出哪些文件是不一样的；N：In directory comparison, if a file is found in only one directory, treat it as present but empty in the other directory.
+diff -Nrq a b
 ```
 [更多比较参数](https://blog.csdn.net/mosesmo1989/article/details/51093631)
 
@@ -811,6 +815,14 @@ make -n
 ```sh
 setup/portal.list: 类似于slaves
 port number范围：1到65535 1到1023是系统其它的可以随便用
+
+# 当 remote memory节点的数量少于 (#define NDISKS (NDATAS + 2) //number of splits+parity)，下面这条指令就会一直卡住，并且无法被kill，只能通过重启来解决
+/usr/local/bin/nbdxadm -o create_device -i 0 -d 0
+
+# 查看内核日志信息
+dmesg
+# 最新10行内核日志信息
+dmesg | tail -n 10
 ```
 
 ## YCSB生成trace
