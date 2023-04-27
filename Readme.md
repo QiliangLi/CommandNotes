@@ -805,12 +805,6 @@ sudo umount sxy/ib/mnt
 modinfo mlx4_core | grep ^version:
 ```
 
-## Configure and Makefile
-```sh
-# 输出基于Makefile的完整gcc编译指令
-make -n
-```
-
 ## Notes on running Hydra
 ```sh
 setup/portal.list: 类似于slaves
@@ -823,6 +817,14 @@ port number范围：1到65535 1到1023是系统其它的可以随便用
 dmesg
 # 最新10行内核日志信息
 dmesg | tail -n 10
+
+# 内核版本与OFED版本测试
+# CentOS Linux release 7.3.1611 (Core)
+kernel 4.4.0    OFED 3.4-2.2.2      卡死
+kernel 4.11.0   OFED 3.4-2.2.2      无法成功编译出符合kernel版本的OFED
+
+kernel 4.4.0    OFED 4.1-1.0.2
+kernel 4.11.0   OFED 4.1-1.0.2
 ```
 
 ## YCSB生成trace
@@ -831,3 +833,8 @@ dmesg | tail -n 10
 /home/hadoop/YCSB-tracegen/ycsb.sh
 ```
 
+## Configure and Makefile
+```sh
+# 输出基于Makefile的完整gcc编译指令
+make -n
+```
