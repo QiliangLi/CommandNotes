@@ -820,11 +820,11 @@ dmesg | tail -n 10
 
 # 内核版本与OFED版本测试
 # CentOS Linux release 7.3.1611 (Core)
-kernel 4.4.0    OFED 3.4-2.2.2      卡死
+kernel 4.4.0    OFED 3.4-2.2.2      修改Makefile后编译成功；create_device卡死
 kernel 4.11.0   OFED 3.4-2.2.2      无法成功编译出符合kernel版本的OFED
 
 kernel 4.4.0    OFED 4.1-1.0.2
-kernel 4.11.0   OFED 4.1-1.0.2
+kernel 4.11.0   OFED 4.1-1.0.2      仅修复了Makefile中关于hydra.ko模块的位置；
 ```
 
 ## YCSB生成trace
