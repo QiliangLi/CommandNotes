@@ -825,6 +825,27 @@ kernel 4.11.0   OFED 3.4-2.2.2      无法成功编译出符合kernel版本的OF
 
 kernel 4.4.0    OFED 4.1-1.0.2
 kernel 4.11.0   OFED 4.1-1.0.2      仅修复了Makefile中关于hydra.ko模块的位置；
+
+node19 x x
+node18 o o
+node17 x o x
+node16 x x
+node15 o
+node14 -
+node13 o x o
+node12 -
+node11 x
+node10 o x
+node9 o x
+node8 x x
+node7 x o
+node6 x x
+node5 x o 
+node4 x x
+node3 o x x
+node2 x x
+node1 x x
+
 ```
 
 ## YCSB生成trace
