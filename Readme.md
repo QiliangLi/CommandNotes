@@ -805,6 +805,14 @@ sudo umount sxy/ib/mnt
 modinfo mlx4_core | grep ^version:
 ```
 
+## Weird RDMA Bugs
+```sh
+# 问题：使用Disni时遇到 j2c::createEventChannel: rdma_create_event_channel failed: No such file or directory
+# 原因：内核模块rdma_ucm未加载
+# 解决：加载rdma_ucm模块
+sudo modprobe rdma_ucm
+```
+
 ## Notes on running Hydra
 ```sh
 setup/portal.list: 类似于slaves
