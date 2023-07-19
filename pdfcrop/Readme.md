@@ -19,3 +19,6 @@ Host n19
 # the given path ends with no '/'
 ./easyallcrop.sh .
 ```
+
+## Known Limitations
+1. 无法处理包含空格的pdf路径
