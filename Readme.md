@@ -269,7 +269,7 @@ ifstat -t -i ib0
 ifstat -t -i ib0 1 1
 ifstat -t -i ens4f1 1 1
 
-
+for i in {1..19};do ssh hadoop@n$i "hostname;ifstat -t -i ib0 1 1";done
 for i in {1..19};do ssh hadoop@n$i "hostname;sudo ~/wondershaper/wondershaper -c -a ens9 &";done
 
 scp -P 12345 -r ./0.9 hadoop@210.45.114.30:/home/hadoop/
