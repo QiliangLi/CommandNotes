@@ -871,3 +871,19 @@ node1 x x
 # 输出基于Makefile的完整gcc编译指令
 make -n
 ```
+
+## Stop some applications
+```sh
+# 关闭ceph-osd和ceph-mds
+sudo systemctl stop ceph.target / sudo systemctl stop ceph-osd.target / sudo systemctl stop ceph-mds.target
+# 关闭docker
+sudo systemctl stop docker
+# 关闭containerd
+sudo systemctl stop containerd
+# 关闭etcd
+sudo systemctl stop etcd
+# 关闭influxdb
+sudo service influxdb stop
+# 关闭Prometheus等：切换到tidb，source .bash_profile
+tiup cluster stop hands
+```
