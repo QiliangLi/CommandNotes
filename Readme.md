@@ -694,11 +694,14 @@ ib_read_lat -d mlx5_1 -a -F
 ib_write_lat -d mlx5_1 -a -F
 
 sudo ib_read_lat -d mlx4_0 -a -F
+sudo ib_write_lat -d mlx4_0 -a -F
 # client端测试命令
 ib_read_lat -d mlx5_1 -a -F 10.0.0.62<server ip>
 ib_write_lat -d mlx5_1 -a -F 10.0.0.62
 
 sudo ib_read_lat -d mlx4_0 -a -F 10.0.0.2
+sudo ib_write_lat -d mlx4_0 -a -F 10.0.0.2
+
 
 # FAQ：
 # 1. (client端) Completion with error at client. Failed status 10: wr_id 0 syndrom 0x88. scnt=1, ccnt=1.
