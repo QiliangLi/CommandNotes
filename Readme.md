@@ -418,6 +418,7 @@ screen -ls
 screen -S session_name -X quit
 # 2. 激活screen，并利用exit退出并kill掉session
 screen -r session_name
+# 3. 在session的窗口中exit
 exit
 ```
 
