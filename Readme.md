@@ -731,6 +731,8 @@ modinfo mlx4_core
 ## Mellanox OFED驱动安装
 ```sh
 # 脚本 copyright@Daniel
+# 需要修改的地方：ID的值；iso文件名（2处）
+# 注意要装的驱动的版本必须和OS的版本一样，否则肯定装不成功
 #!/bin/bash
 
 SUDO=
@@ -819,6 +821,30 @@ modinfo mlx4_core | grep ^version:
 # 原因：内核模块rdma_ucm未加载
 # 解决：加载rdma_ucm模块
 sudo modprobe rdma_ucm
+
+# 问题：create cq error: Cannot allocate memory
+# 原因：使用ulimit -a查看，发现max locked memory为64
+# 解决：修改max locked memory为unlimited
+# 方法一：临时修改，仅对当前shell生效，重新登陆后恢复为64
+ulimit -l unlimited
+# 如果提示ulimit: max locked memory: cannot modify limit: Operation not permitted
+# 以下命令不适用于ssh远程执行
+sudo sh -c "ulimit -l unlimited && exec su $LOGNAME"
+# 方法二：修改/etc/security/limits.conf，追加以下内容后重新登陆即可
+# 针对所有用户均unlimited
+* soft memlock unlimited
+* hard memlock unlimited
+# 针对指定用户unlimited
+@hadoop soft memlock unlimited
+@hadoop hard memlock unlimited
+# 方法三：如果方法二不生效，则修改/etc/systemd/user.conf （soft limit）和/etc/systemd/system.conf (hard limit)，添加下面这一行
+DefaultLimitMEMLOCK=infinity
+# 创建/etc/systemd/user.conf.d/limits.conf和/etc/systemd/system.conf.d/limits.conf，添加下面这一行，然后重启即可。
+DefaultLimitMEMLOCK=infinity
+
+# 问题：无法调用ibv_open_device()，会报libibverbs: Warning: couldn't load driver 'mlx4': /usr/lib64/libmlx4-rdmav2.so: symbol ibv_exp_cmd_rereg_mr, version IBVERBS_1.1 not defined in file libibverbs.so.1 with link time reference
+# libibverbs: Warning: no userspace device-specific driver found for /sys/class/infiniband_verbs/uverbs0
+# 解决：重装驱动
 ```
 
 ## Notes on running Hydra
