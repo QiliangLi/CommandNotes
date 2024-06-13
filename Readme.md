@@ -732,7 +732,9 @@ modinfo mlx4_core
 ```sh
 # 脚本 copyright@Daniel
 # 需要修改的地方：ID的值；iso文件名（2处）
+# 下载iso：https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/
 # 注意要装的驱动的版本必须和OS的版本一样，否则肯定装不成功
+
 #!/bin/bash
 
 SUDO=
