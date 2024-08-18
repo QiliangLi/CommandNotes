@@ -806,12 +806,32 @@ ${SUDO} nmcli connection up iblink
 echo "IP Address:"
 ip addr
 
-# FAQ：Mellanox官网驱动并不会只会指定OS版本，并不会指定内核版本，因此可能会出现内核版本不匹配的问题：The 4.4.0 kernel is installed, MLNX OFED LINUX does not have drivers available for this kernel.
+# FAQ：
+# 1. Mellanox官网驱动并不会只会指定OS版本，并不会指定内核版本，因此可能会出现内核版本不匹配的问题：The 4.4.0 kernel is installed, MLNX OFED LINUX does not have drivers available for this kernel.
 # 解决方法：编译一个符合当前OS和内核版本的驱动镜像
 cd sxy/ib/mnt
 sudo ./mlnx_add_kernel_support.sh --mlnx_ofed ./ --make-iso
 sudo umount sxy/ib/mnt
 # 将编译生成在/tmp下的镜像名替换至以上脚本，并重新安装
+
+# 2. 脚本中在使用yum install时，可能出现一直连不上的情况（连一个ipv6的地址）："Failed to connect to 2404:6800:4012::200e: Network is unreachable"
+# 解决方法：可能由于装了kubernetes或docker，导致yum连接到了不可访问的地址。需要在脚本执行前先把/etc/yum.repos.d目录下的kubernetes.repo/docker-ce.repo改成kubernetes.repo.bak/docker-ce.repo.bak，装完之后再改回来。
+
+# 3. 由于在安装前需要卸载RDMA驱动，因此如果有依赖于RDMA的驱动正在被加载，会导致openibd服务起不来。
+# E.g. nvme驱动导致openibd服务起不来，IB网卡没法识别：
+# $ sudo service openibd start
+# Unloading mlx_compat                                       [FAILED]
+# rmmod: ERROR: Module mlx_compat is in use by: nvme nvme_core
+# 同时，无法使用rmmod和modprobe -r卸载nvme和nvme_core，会报“module is in use”
+# 解决方法：屏蔽nvme和nvme_core的加载（在/etc/modprobe.d/中建立一个conf文件，用来屏蔽nvme模块），并重启。
+sudo vi /etc/modprobe.d/blacklist.conf
+# 添加两行：
+blacklist nvme
+blacklist nvme_core
+
+# 4. 编译驱动时遇到问题：mkisofs command not found
+# 解决方案：安装genisoimage
+sudo yum install genisoimage -y
 
 # 验证是否成功：查看驱动版本号
 modinfo mlx4_core | grep ^version:
